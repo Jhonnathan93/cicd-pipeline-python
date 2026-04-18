@@ -16,7 +16,10 @@ def _secret_key() -> str:
     if env_key:
         return env_key
 
-    key_file = Path(os.environ.get("SECRET_KEY_FILE", "/tmp/cicd_pipeline_secret_key"))
+    default_key_path = (
+        Path(__file__).resolve().parent.parent / ".cicd_pipeline_secret_key"
+    )
+    key_file = Path(os.environ.get("SECRET_KEY_FILE", str(default_key_path)))
     if key_file.exists():
         return key_file.read_text(encoding="utf-8").strip()
 
