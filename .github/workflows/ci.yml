@@ -41,7 +41,7 @@ jobs:
 
       - name: Run Acceptance Tests
         env:
-           APP_BASE_URL: http://localhost:8000
+          APP_BASE_URL: http://localhost:8000
         run: |
           gunicorn --workers=2 --bind=0.0.0.0:8000 app.app:app &
           sleep 10
