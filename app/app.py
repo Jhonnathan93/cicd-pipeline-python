@@ -1,16 +1,24 @@
 """Aplicación web Flask de la calculadora con protección CSRF."""
 
 import os
+import secrets
 
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 
 from .calculadora import dividir, multiplicar, restar, sumar
 
-SECRET_KEY_DEFAULT = "dev-secret-change-in-production"
+
+def _secret_key() -> str:
+    """Clave sesión/CSRF desde env; si no hay, aleatoria (nada fijo en el repo)."""
+    env_key = os.environ.get("SECRET_KEY")
+    if env_key:
+        return env_key
+    return secrets.token_hex(32)
+
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY_DEFAULT)
+app.config["SECRET_KEY"] = _secret_key()
 csrf = CSRFProtect(app)
 
 
