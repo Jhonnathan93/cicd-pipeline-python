@@ -14,6 +14,48 @@ Un pipeline de Integración Continua (CI) le da varias a un proyecto:
 - **Prueba unitaria:** valida una pieza pequeña y aislada de lógica, sin dependencias externas.
 - **Prueba de aceptación:** valida el comportamiento completo desde la perspectiva del usuario.
 
+Ahora tomemos como ejemplo una aplicación que al iniciar sesión diga "hola nombre de usuario" 
+
+- Para una prueba unitaria probariamos la función  
+
+```
+
+Def generar_saludo(nombre): 
+
+   Return "Hola {nombre}"
+
+```
+
+Para la cual creariamos un test unitario el cual pruebe si envio parámetro Mariana el resultado sería “Hola Mariana”
+ 
+- Si quisiera realizar una prueba de aceptación  
+
+Tomaríamos la siguiente historia de usuario: 
+
+```
+
+Como usuario, quiero iniciar sesión para ver un saludo personalizado.
+
+```
+
+Y creariomos la siguiente prueba de aceptación:
+
+```
+
+Escenario: Mostrar saludo después de iniciar sesión 
+
+  Dado que el usuario está en la página de inicio de sesión 
+
+  Y tiene una cuenta con nombre “Mariana” 
+
+  Cuando ingresa sus credenciales correctas 
+
+  Y hace clic en “Iniciar sesión” 
+
+  Entonces debe ver el mensaje “Hola Mariana” 
+
+```
+
 ## 3) Qué hace cada step principal del workflow
 
 Desde checkout hasta push de Docker:
