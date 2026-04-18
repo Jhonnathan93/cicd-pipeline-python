@@ -1,32 +1,35 @@
-# app/app.py
+"""Aplicación web Flask de la calculadora con protección CSRF."""
+
 import os
 
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 
-from .calculadora import sumar, restar, multiplicar, dividir
+from .calculadora import dividir, multiplicar, restar, sumar
+
+SECRET_KEY_DEFAULT = "dev-secret-change-in-production"
 
 app = Flask(__name__)
-_dev_secret = "dev-secret-change-in-production"
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", _dev_secret)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY_DEFAULT)
 csrf = CSRFProtect(app)
 
 
 def _resultado_from_post() -> str | float | None:
+    """Calcula el resultado a partir del formulario POST."""
     try:
         num1 = float(request.form["num1"])
         num2 = float(request.form["num2"])
         operacion = request.form["operacion"]
-
-        if operacion == "sumar":
-            return sumar(num1, num2)
-        if operacion == "restar":
-            return restar(num1, num2)
-        if operacion == "multiplicar":
-            return multiplicar(num1, num2)
-        if operacion == "dividir":
-            return dividir(num1, num2)
-        return "Operación no válida"
+        operaciones = {
+            "sumar": sumar,
+            "restar": restar,
+            "multiplicar": multiplicar,
+            "dividir": dividir,
+        }
+        funcion = operaciones.get(operacion)
+        if funcion is None:
+            return "Operación no válida"
+        return funcion(num1, num2)
     except ValueError:
         return "Error: Introduce números válidos"
     except ZeroDivisionError:
@@ -35,11 +38,13 @@ def _resultado_from_post() -> str | float | None:
 
 @app.get("/")
 def index_get():
+    """Muestra el formulario de la calculadora."""
     return render_template("index.html", resultado=None)
 
 
 @app.post("/")
 def index_post():
+    """Procesa el envío del formulario y muestra el resultado."""
     return render_template("index.html", resultado=_resultado_from_post())
 
 
